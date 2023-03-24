@@ -1,13 +1,5 @@
 # DL4Survival
 Repository for the overview paper "Deep Learning for Survival Analysis: A Survey"
 
-## Overview of DL-based Survival Methods
-```r
-install.packages("reactable")
-```
-
-```r
-library(reactable)
-
-reactable(iris)
-```
+The main table containing summaries, categorizations and classifications of all methods reviewed in the paper can be found here:
+TBD: insert gh-pageslink
