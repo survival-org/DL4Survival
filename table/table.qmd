@@ -70,14 +70,18 @@ data = raw %>%
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 htmltools::browsable(
   tagList(
     tags$button(
       "Show/hide more columns",
       onclick = "Reactable.setHiddenColumns('table', prevColumns => {
-        return prevColumns.length === 0 ? ['title', 'authors', 'multi-task learning', 'code availability', 'code repository', 'datasets (non-private)', 'simulation'] : []
+        return prevColumns.length === 0 ? ['title', 'authors', 'multi-task learning', 'type of interpretability', 'code availability', 'code repository', 'datasets (non-private)', 'simulation'] : []
       })"
+    ),
+    tags$button(
+      tagList(fontawesome::fa("download"), "Download as CSV"),
+      onclick = "Reactable.downloadDataCSV('table', 'table.csv')"
     ),
     reactable(
       data,
@@ -85,9 +89,58 @@ htmltools::browsable(
         title = colDef(show = FALSE),
         authors = colDef(show = FALSE),
         `multi-task learning` = colDef(show = FALSE),
+        `multiple losses` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        `left-truncation` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        `interval-censoring` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        CR = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        MSM = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        `recurrent events` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        TVF = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        TVE = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        `high dimensionality` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        multimodality = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        interpretability = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        `type of interpretability` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+            show = FALSE
+            ),
         `code availability` = colDef(
             # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else "\u2714\ufe0f Yes"},
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
             show = FALSE
             ),
         `code repository` = colDef(
@@ -108,11 +161,4 @@ htmltools::browsable(
     )
   )
 )
-# reactable(
-#   data,
-#   filterable = TRUE,
-#   searchable = TRUE,
-#   minRows = 10,
-#   highlight = TRUE
-# )
 ```
