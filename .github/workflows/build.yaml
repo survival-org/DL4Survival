@@ -6,7 +6,8 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  # build-and-deploy:
+  quarto-render-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
