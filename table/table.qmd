@@ -8,7 +8,7 @@ knitr::current_input()
 ```
 
 ```{r, include=FALSE}
-library(tidyverse)
+library(dplyr)
 suppressWarnings(library(reactable))
 library(htmltools)
 # library(googlesheets4)
