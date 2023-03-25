@@ -9,6 +9,7 @@ knitr::current_input()
 
 ```{r, include=FALSE}
 library(dplyr)
+library(stringr)
 suppressWarnings(library(reactable))
 library(htmltools)
 # library(googlesheets4)
