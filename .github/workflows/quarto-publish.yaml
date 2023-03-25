@@ -18,12 +18,12 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y nodejs
-          npm install -g quarto
-          npm install -g quarto-render-html
+      # - name: Install Dependencies
+        # run: |
+          # sudo apt-get update
+          # sudo apt-get install -y nodejs
+          # npm install -g quarto
+          # npm install -g quarto-render-html
 
       - name: Build Table
         run: quarto render table/table.qmd
