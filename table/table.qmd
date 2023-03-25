@@ -8,12 +8,9 @@ knitr::current_input()
 ```
 
 ```{r, include=FALSE}
-# install.packages("rmarkdown")
-# library(rmarkdown)
 library(tidyverse)
 suppressWarnings(library(reactable))
 library(htmltools)
-library(rmarkdown)
 # library(googlesheets4)
 
 # link <- "https://docs.google.com/spreadsheets/d/11CNiOzZGwKie1G2miQY6TVMVMfI-COmiF4x2ylqetzA/edit#gid=0"

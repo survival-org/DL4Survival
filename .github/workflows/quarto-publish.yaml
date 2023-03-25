@@ -21,6 +21,9 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo Rscript -e 'install.packages("rmarkdown", repos="https://cloud.r-project.org")'
+          sudo Rscript -e 'install.packages("tidyverse", repos="https://cloud.r-project.org")'
+          sudo Rscript -e 'install.packages("reactable", repos="https://cloud.r-project.org")'
+          sudo Rscript -e 'install.packages("htmltools", repos="https://cloud.r-project.org")'
           # sudo apt-get update
           # sudo apt-get install -y nodejs
           # npm install -g quarto
