@@ -8,8 +8,8 @@ knitr::current_input()
 ```
 
 ```{r, include=FALSE}
-install.packages("rmarkdown")
-library(rmarkdown)
+# install.packages("rmarkdown")
+# library(rmarkdown)
 library(tidyverse)
 suppressWarnings(library(reactable))
 library(htmltools)
