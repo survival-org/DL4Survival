@@ -1,19 +1,22 @@
-name: Build and Deploy
-
 on:
   push:
     branches:
       - main
 
+name: Render and Publish
+
 jobs:
-  build-and-deploy:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
+      - name: Check out repository
+        uses: actions/checkout@v3
 
-      - name: Check NPM Registry
-        run: npm config get registry
+      # - name: Check NPM Registry
+      #   run: npm config get registry
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Install Dependencies
         run: |
@@ -25,10 +28,11 @@ jobs:
       - name: Build Table
         run: quarto render table/table.qmd
 
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.3
+      - name: Publish to GitHub Pages (and render)
+        uses: quarto-dev/quarto-actions/publish@v2
         with:
           branch: gh-pages
+          # target: gh-pages
           folder: .
           clean: true
         env:
