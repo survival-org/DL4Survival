@@ -11,6 +11,7 @@ knitr::current_input()
 library(tidyverse)
 suppressWarnings(library(reactable))
 library(htmltools)
+library(jsonlite)
 # library(googlesheets4)
 
 # link <- "https://docs.google.com/spreadsheets/d/11CNiOzZGwKie1G2miQY6TVMVMfI-COmiF4x2ylqetzA/edit#gid=0"
