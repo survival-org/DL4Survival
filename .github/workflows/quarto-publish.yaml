@@ -18,8 +18,9 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      # - name: Install Dependencies
-        # run: |
+      - name: Install Dependencies
+        run: |
+          Rscript -e 'install.packages("drat", repos="https://cloud.r-project.org")'
           # sudo apt-get update
           # sudo apt-get install -y nodejs
           # npm install -g quarto
