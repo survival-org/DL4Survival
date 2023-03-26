@@ -9,6 +9,7 @@ knitr::current_input()
 ```
 
 ```{r, include=FALSE}
+library(fontawesome)
 library(tidyverse)
 suppressWarnings(library(reactable))
 library(htmltools)

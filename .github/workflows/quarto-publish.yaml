@@ -1,4 +1,5 @@
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -8,12 +9,11 @@ name: Render and Publish
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
-
-      # - name: Check NPM Registry
-      #   run: npm config get registry
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -35,9 +35,10 @@ jobs:
 
       - name: Publish to GitHub Pages (and render)
         uses: quarto-dev/quarto-actions/publish@v2
+        # uses: JamesIves/github-pages-deploy-action@4.1.3
         with:
-          branch: gh-pages
-          # target: gh-pages
+          # branch: gh-pages
+          target: gh-pages
           folder: .
           clean: true
         env:
