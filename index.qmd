@@ -55,12 +55,7 @@ data = raw %>%
             str_detect(raw[["NN architecture"]], "framework") ~ "framework",
             raw[["NN architecture"]] == "FFNN" ~ "only FFNN",
             TRUE ~ "other"
-        ) %>% factor(levels = c("only FFNN", "CNN", "RNN", "AE/VAE", "transformer", "nODE", "flexible", "framework", "other")),
-        # cens_or_trunc = ifelse(
-        #     `left-truncation`=="yes" | `interval-censoring`=="yes",
-        #     "yes",
-        #     "no"
-        #     )
+        ) %>% factor(levels = c("only FFNN", "CNN", "RNN", "AE/VAE", "transformer", "nODE", "flexible", "framework", "other"))
     ) %>%
     filter(PASS == "PASS") %>%
     select(-one_of(drop_cols)) %>%
