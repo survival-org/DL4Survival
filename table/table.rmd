@@ -1,0 +1,173 @@
+
+
+```{r setup, include=FALSE}
+set.seed(1102)
+# library(rstudioapi)
+# setwd(dirname(getActiveDocumentContext()$path))
+knitr::current_input()
+# options(reactable.static = TRUE)
+```
+
+```{r, include=FALSE}
+library(fontawesome)
+library(tidyverse)
+suppressWarnings(library(reactable))
+library(htmltools)
+# library(googlesheets4)
+
+# link <- "https://docs.google.com/spreadsheets/d/11CNiOzZGwKie1G2miQY6TVMVMfI-COmiF4x2ylqetzA/edit#gid=0"
+# raw <- googlesheets4::read_sheet(link)
+# write.csv(raw, "../data/raw.csv")
+```
+
+```{r, include=FALSE}
+raw <- read.csv(
+  "../data/raw.csv",
+  check.names=FALSE,
+  fileEncoding="UTF-8")
+drop_cols <- c(
+    # "model class",
+    "NN architecture",
+    "active learning",
+    "semi-supervised learning",
+    "PASS",
+    "comments"
+)
+
+data = raw %>%
+    mutate(
+        `model class` = case_when(
+            # str_detect(raw[["model class"]], "Cox") ~ "Cox-based",
+            # str_detect(raw[["model class"]], "discrete") ~ "discrete-time",
+            # str_detect(raw[["model class"]], "PEM") ~ "PEM-based",
+            `model class` == "Cox-based" ~ "Cox-based",
+            `model class` == "discrete-time" ~ "discrete-time",
+            `model class` == "PEM-based" ~ "PEM-based",
+            str_detect(raw[["model class"]], "parametric") ~ "parametric",
+            TRUE ~ "other"
+        ) %>% factor(levels = c("Cox-based", "discrete-time", "parametric", "PEM-based", "other")),
+        architecture = case_when(
+            str_detect(raw[["NN architecture"]], "CNN") ~ "CNN",
+            str_detect(raw[["NN architecture"]], "RNN") ~ "RNN",
+            str_detect(raw[["NN architecture"]], "AE") ~ "AE/VAE",
+            str_detect(raw[["NN architecture"]], "transformer") ~ "transformer",
+            str_detect(raw[["NN architecture"]], "ODE") ~ "nODE",
+            str_detect(raw[["NN architecture"]], "flexible") ~ "flexible",
+            str_detect(raw[["NN architecture"]], "framework") ~ "framework",
+            raw[["NN architecture"]] == "FFNN" ~ "only FFNN",
+            TRUE ~ "other"
+        ) %>% factor(levels = c("only FFNN", "CNN", "RNN", "AE/VAE", "transformer", "nODE", "flexible", "framework", "other")),
+        # cens_or_trunc = ifelse(
+        #     `left-truncation`=="yes" | `interval-censoring`=="yes",
+        #     "yes",
+        #     "no"
+        #     )
+    ) %>%
+    filter(PASS == "PASS") %>%
+    select(-one_of(drop_cols)) %>%
+    # relocate(model_class, .before = 4) %>%
+    # rename(`model class` = model_class) %>%
+    relocate(architecture, .before = 9)
+
+```
+
+
+```{r, echo=FALSE}
+htmltools::browsable(
+  tagList(
+    tags$button(
+      "Show/hide more columns",
+      onclick = "Reactable.setHiddenColumns('table', prevColumns => {
+        return prevColumns.length === 0 ? ['title', 'authors', 'multi-task learning', 'type of interpretability', 'code availability', 'code repository', 'datasets (non-private)', 'simulation'] : []
+      })"
+    ),
+    tags$button(
+      tagList(fontawesome::fa("download"), "Download as CSV"),
+      onclick = "Reactable.downloadDataCSV('table', 'table.csv')"
+    ),
+    reactable(
+      data,
+      columns = list(
+        title = colDef(show = FALSE),
+        authors = colDef(show = FALSE),
+        `multi-task learning` = colDef(show = FALSE),
+        `multiple losses` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        `left-truncation` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        `interval-censoring` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        CR = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        MSM = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        `recurrent events` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        TVF = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        TVE = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        `high dimensionality` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        multimodality = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        interpretability = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            ),
+        `type of interpretability` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+            show = FALSE
+            ),
+        `code availability` = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+            show = FALSE
+            ),
+        `code repository` = colDef(
+            # render as link
+            cell = function(value){
+                url <- value
+                htmltools::tags$a(href = url, target = "_blank", as.character(value))
+                }
+            ),
+        `datasets (non-private)` = colDef(show = FALSE),
+        simulation = colDef(
+            # render as an X mark or check mark
+            cell = function(value){if(value == "no") "\u274c No" else "\u2714\ufe0f Yes"},
+            show = FALSE
+            )
+      ),
+      elementId = "table"
+    )
+  )
+)
+```
+
+```{css echo=FALSE}
+/* rmarkdown html documents */
+.main-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+```
