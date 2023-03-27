@@ -84,10 +84,13 @@ htmltools::browsable(
       columns = list(
         title = colDef(show = FALSE),
         authors = colDef(show = FALSE),
+        year = colDef(minWidth = 60),
+        parametrization = colDef(minWidth = 120),
         `multi-task learning` = colDef(show = FALSE),
         `multiple losses` = colDef(
             # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+            minWidth = 70
             ),
         `left-truncation` = colDef(
             # render as an X mark or check mark
@@ -99,27 +102,33 @@ htmltools::browsable(
             ),
         CR = colDef(
             # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+            minWidth = 60
             ),
         MSM = colDef(
             # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+            minWidth = 60
             ),
         `recurrent events` = colDef(
             # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+            minWidth = 80
             ),
         TVF = colDef(
             # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+            minWidth = 60
             ),
         TVE = colDef(
             # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+            minWidth = 60
             ),
         `high dimensionality` = colDef(
             # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+            minWidth = 100
             ),
         multimodality = colDef(
             # render as an X mark or check mark
@@ -127,7 +136,8 @@ htmltools::browsable(
             ),
         interpretability = colDef(
             # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+            minWidth = 100
             ),
         `type of interpretability` = colDef(
             # render as an X mark or check mark
