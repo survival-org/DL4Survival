@@ -31,14 +31,14 @@ jobs:
           # npm install -g quarto-render-html
 
       - name: Build Table
-        run: quarto render table/table.qmd
+        run: quarto render index.qmd
 
-      - name: Publish to GitHub Pages (and render)
-        uses: quarto-dev/quarto-actions/publish@v2
-        # uses: JamesIves/github-pages-deploy-action@4.1.3
+      - name: Publish to GitHub Pages
+        # uses: quarto-dev/quarto-actions/publish@v2
+        uses: JamesIves/github-pages-deploy-action@4.1.3
         with:
-          # branch: gh-pages
-          target: gh-pages
+          branch: gh-pages
+          # target: gh-pages
           folder: .
           clean: true
         env:

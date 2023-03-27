@@ -21,7 +21,7 @@ library(htmltools)
 
 ```{r, include=FALSE}
 raw <- read.csv(
-  "../data/raw.csv",
+  "data/raw.csv",
   check.names=FALSE,
   fileEncoding="UTF-8")
 drop_cols <- c(
