@@ -65,6 +65,7 @@ data = raw %>%
 
 ```
 
+# Overview Table of DL-based Survival Methods
 
 ```{r, echo=FALSE}
 htmltools::browsable(
@@ -85,7 +86,7 @@ htmltools::browsable(
         title = colDef(show = FALSE),
         authors = colDef(show = FALSE),
         year = colDef(minWidth = 60),
-        parametrization = colDef(minWidth = 120),
+        parametrization = colDef(minWidth = 110),
         `multi-task learning` = colDef(show = FALSE),
         `multiple losses` = colDef(
             # render as an X mark or check mark
@@ -128,7 +129,7 @@ htmltools::browsable(
         `high dimensionality` = colDef(
             # render as an X mark or check mark
             cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
-            minWidth = 100
+            minWidth = 110
             ),
         multimodality = colDef(
             # render as an X mark or check mark
@@ -137,7 +138,7 @@ htmltools::browsable(
         interpretability = colDef(
             # render as an X mark or check mark
             cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
-            minWidth = 100
+            minWidth = 110
             ),
         `type of interpretability` = colDef(
             # render as an X mark or check mark
