@@ -1,8 +1,19 @@
+---
+format:
+  html:
+    page-layout: full
+    theme: cosmo
+    fontsize: 0.7em
+    max-width: 1400px
+    grid:
+        body-width: 3000px
+        margin-width: 0px
+        sidebar-width: 0px
+---
 
 ```{r setup, include=FALSE}
 set.seed(1102)
-# library(rstudioapi)
-# setwd(dirname(getActiveDocumentContext()$path))
+# setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 knitr::current_input()
 # options(reactable.static = TRUE)
 ```
@@ -27,6 +38,7 @@ raw <- read.csv(
 drop_cols <- c(
     # "model class",
     "NN architecture",
+    "code availability",
     "active learning",
     "semi-supervised learning",
     "PASS",
@@ -69,103 +81,176 @@ data = raw %>%
 
 ```{r, echo=FALSE}
 htmltools::browsable(
-  tagList(
-    tags$button(
-      "Show/hide more columns",
-      onclick = "Reactable.setHiddenColumns('table', prevColumns => {
-        return prevColumns.length === 0 ? ['title', 'authors', 'multi-task learning', 'type of interpretability', 'code availability', 'code repository', 'datasets (non-private)', 'simulation'] : []
-      })"
-    ),
-    tags$button(
-      tagList(fontawesome::fa("download"), "Download as CSV"),
-      onclick = "Reactable.downloadDataCSV('table', 'table.csv')"
-    ),
-    reactable(
-      data,
-      columns = list(
-        title = colDef(show = FALSE),
-        authors = colDef(show = FALSE),
-        year = colDef(minWidth = 60),
-        parametrization = colDef(minWidth = 110),
-        `multi-task learning` = colDef(show = FALSE),
-        `multiple losses` = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
-            minWidth = 70
-            ),
-        `left-truncation` = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
-            ),
-        `interval-censoring` = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
-            ),
-        CR = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
-            minWidth = 60
-            ),
-        MSM = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
-            minWidth = 60
-            ),
-        `recurrent events` = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
-            minWidth = 80
-            ),
-        TVF = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
-            minWidth = 60
-            ),
-        TVE = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
-            minWidth = 60
-            ),
-        `high dimensionality` = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
-            minWidth = 110
-            ),
-        multimodality = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
-            ),
-        interpretability = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
-            minWidth = 110
-            ),
-        `type of interpretability` = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
-            show = FALSE
-            ),
-        `code availability` = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
-            show = FALSE
-            ),
-        `code repository` = colDef(
-            # render as link
-            cell = function(value){
-                url <- value
-                htmltools::tags$a(href = url, target = "_blank", as.character(value))
+    tagList(
+        tags$button(
+            "Show/hide more columns",
+            onclick = "Reactable.setHiddenColumns('table', prevColumns => {
+                return prevColumns.length === 0 ? ['title', 'authors', 'multi-task learning', 'type of interpretability', 'code availability', 'code repository', 'datasets (non-private)', 'simulation'] : []
+            })"
+        ),
+        tags$button(
+            tagList(fontawesome::fa("download"), "Download as CSV"),
+            onclick = "Reactable.downloadDataCSV('table', 'table.csv')"
+        ),
+        reactable(
+            data,
+            elementId = "table",
+            minRows = 10,
+            details = function(index) {
+                urls <- strsplit(data[index, "code"], ", ")[[1]]
+                if(length(urls) == 2) {
+                    htmltools::div(
+                        "further implementations of ",
+                        data[index, "model name"],
+                        ": ",
+                        htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
+                    )
+                } else if(length(urls) == 3) {
+                    htmltools::div(
+                        "further implementations of ",
+                        data[index, "model name"],
+                        ": ",
+                        htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
+                        ", ",
+                        htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
+                    )
+                } else if(length(urls) == 4) {
+                    htmltools::div(
+                        "further implementations of ",
+                        data[index, "model name"],
+                        ": ",
+                        htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
+                        ", ",
+                        htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
+                        ", ",
+                        htmltools::tags$a(href = urls[4], target = "_blank", urls[4]),
+                    )
+                } else if(length(urls) == 5) {
+                    htmltools::div(
+                        "further implementations of ",
+                        data[index, "model name"],
+                        ": ",
+                        htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
+                        ", ",
+                        htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
+                        ", ",
+                        htmltools::tags$a(href = urls[4], target = "_blank", urls[4]),
+                        ", ",
+                        htmltools::tags$a(href = urls[5], target = "_blank", urls[5]),
+                    )
+                } else if(length(urls) == 6) {
+                    htmltools::div(
+                        "further implementations of ",
+                        data[index, "model name"],
+                        ": ",
+                        htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
+                        ", ",
+                        htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
+                        ", ",
+                        htmltools::tags$a(href = urls[4], target = "_blank", urls[4]),
+                        ", ",
+                        htmltools::tags$a(href = urls[5], target = "_blank", urls[5]),
+                        ", ",
+                        htmltools::tags$a(href = urls[6], target = "_blank", urls[6]),
+                    )
                 }
-            ),
-        `datasets (non-private)` = colDef(show = FALSE),
-        simulation = colDef(
-            # render as an X mark or check mark
-            cell = function(value){if(value == "no") "\u274c No" else "\u2714\ufe0f Yes"},
-            show = FALSE
+            },
+            columns = list(
+                title = colDef(show = FALSE),
+                authors = colDef(show = FALSE),
+                year = colDef(minWidth = 60),
+                parametrization = colDef(minWidth = 110),
+                `multi-task learning` = colDef(show = FALSE),
+                `multiple losses` = colDef(
+                    # render as an X mark or check mark
+                    cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+                    minWidth = 70
+                ),
+                `left-truncation` = colDef(
+                    # render as an X mark or check mark
+                    cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+                ),
+                `interval-censoring` = colDef(
+                    # render as an X mark or check mark
+                    cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+                ),
+                CR = colDef(
+                    # render as an X mark or check mark
+                    cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+                    minWidth = 60
+                ),
+                MSM = colDef(
+                    # render as an X mark or check mark
+                    cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+                    minWidth = 60
+                ),
+                `recurrent events` = colDef(
+                    # render as an X mark or check mark
+                    cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+                    minWidth = 80
+                ),
+                TVF = colDef(
+                    # render as an X mark or check mark
+                    cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+                    minWidth = 60
+                ),
+                TVE = colDef(
+                    # render as an X mark or check mark
+                    cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+                    minWidth = 60
+                ),
+                `high dimensionality` = colDef(
+                    # render as an X mark or check mark
+                    cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+                    minWidth = 110
+                ),
+                multimodality = colDef(
+                    # render as an X mark or check mark
+                    cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value}
+                ),
+                interpretability = colDef(
+                    # render as an X mark or check mark
+                    cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+                    minWidth = 110
+                ),
+                # `type of interpretability` = colDef(
+                #     # render as an X mark or check mark
+                #     cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+                #     show = FALSE
+                # ),
+                # `code availability` = colDef(
+                #     # render as an X mark or check mark
+                #     cell = function(value){if(value == "no") "\u274c No" else if(value == "yes") "\u2714\ufe0f Yes" else value},
+                #     show = FALSE
+                # ),
+                `code` = colDef(
+                    # render as link
+                    cell = function(value) {
+                        if(value == "no"){
+                            "\u274c No"
+                        } else {
+                            urls <- strsplit(value, ", ")[[1]]
+                            url <- urls[1]
+                            link <- sub("https://", "", url)
+                            if(startsWith(link, "github")){
+                                label <- "GitHub repo"
+                            } else if(grepl("github\\.io", link)){
+                                label <- "GitHub Pages site"
+                            } else {
+                                label <- link
+                            }
+                            htmltools::tags$a(href = url, target = "_blank", label)
+                        }
+                    }
+                ),
+                `datasets (non-private)` = colDef(show = FALSE),
+                simulation = colDef(
+                    # render as an X mark or check mark
+                    cell = function(value){if(value == "no") "\u274c No" else "\u2714\ufe0f Yes"},
+                    show = FALSE
+                )
             )
-      ),
-      elementId = "table"
+        )
     )
-  )
 )
 ```
