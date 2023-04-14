@@ -4,12 +4,42 @@ format:
     page-layout: full
     theme: cosmo
     fontsize: 0.7em
-    max-width: 2000px
-    grid:
-        body-width: 3000px
-        margin-width: 0px
-        sidebar-width: 0px
+    # max-width: 2000px
+    # grid:
+    #     body-width: 3000px
+    #     margin-width: 0px
+    #     sidebar-width: 0px
 ---
+
+# An Overview Table of DL-based Survival Methods
+
+### Disclaimer
+The table on this GitHub Pages site has been created as part of the review paper [Deep Learning For Survival Analysis: A Review](https://arxiv.org) and is licensed under CC BY.
+
+This table is not guaranteed to be complete and will be continuously extended. To do so, we welcome pull requests by adding to `data/raw.csv` in the [source repository](https://github.com/SimonWiegrebe/DL4Survival) of this site. New methods should comply with the inclusion and exclusion criteria used in the review paper and contain information for all columns in the table. We will then cross-check and subsequently merge new pull requests. Alternatively, you can also contact us directly to notify us regarding new methods.
+
+### Acronyms, abbreviations, and explanations of the table columns
+All of the columns of the table, as well as the corresponding classifications, are described in detail in the review paper.
+
+- model name: official method name if provided in the respective paper; otherwise, the first three letters of the first author's last name followed by the year of publication
+- model class: see review paper for classification
+- parametrization: see review paper for classification
+- architecture: which neural network architecture does the method employ?
+- multiple losses: does the method use more than one loss for training?
+- left-truncation: can the method handle left-truncated survival times?
+- interval-censoring: can the method handle interval-censored survival times?
+- CR: can the method handle competing risks?
+- MSM: can the method handle multi-state modeling?
+- recurrent events: cna the method handle recurrent events?
+- TVF: can the method handle time-varying features?
+- TVE: can the method estimate time-varying effects?
+- high dimensionality: is the method specifically designed for high-dimensional (e.g., omics) features?
+- multimodality: can the method handle features of multiple modalities (e.g., images)?
+- interpretability: are the results produced by the methods (in particular, the feature effects) interpretable?
+- code: is the code for the method and experiments publicly available and, if so, where? (Further implementations of the method, if available, are shown by expanding the respective row.)
+- datasets (non-private): which non-private (i.e., public or registered access) datasets is the method evaluated on in the respective paper?
+- simulation: is the method additionally evaluated on synthetic data?
+
 
 ```{r setup, include=FALSE}
 set.seed(1102)
@@ -62,12 +92,17 @@ data = raw %>%
             str_detect(raw[["NN architecture"]], "RNN") ~ "RNN",
             str_detect(raw[["NN architecture"]], "AE") ~ "AE/VAE",
             str_detect(raw[["NN architecture"]], "transformer") ~ "transformer",
-            str_detect(raw[["NN architecture"]], "ODE") ~ "nODE",
             str_detect(raw[["NN architecture"]], "flexible") ~ "flexible",
+            str_detect(raw[["NN architecture"]], "ODE") ~ "nODE",
+            str_detect(raw[["NN architecture"]], "CapsNet") ~ "CapsNet",
             str_detect(raw[["NN architecture"]], "framework") ~ "framework",
+            str_detect(raw[["NN architecture"]], "GAN") ~ "GAN",
+            str_detect(raw[["NN architecture"]], "normalizing flows") ~ "normalizing flows",
+            str_detect(raw[["NN architecture"]], "PointNet") ~ "PointNet",
             raw[["NN architecture"]] == "FFNN" ~ "only FFNN",
+            str_detect(raw[["NN architecture"]], "FFNN") ~ "FFNN+",
             TRUE ~ "other"
-        ) %>% factor(levels = c("only FFNN", "CNN", "RNN", "AE/VAE", "transformer", "nODE", "flexible", "framework", "other"))
+        ) %>% factor(levels = c("only FFNN", "CNN", "RNN", "FFNN+", "AE/VAE", "transformer", "flexible", "nODE", "CapsNet", "framework", "GAN", "normalizing flows", "PointNet", "other"))
     ) %>%
     filter(PASS == "PASS") %>%
     select(-one_of(drop_cols)) %>%
@@ -89,8 +124,6 @@ data <- data %>%
 
 hide <- c('authors', 'year', 'multiple losses', 'type of interpretability', 'code availability', 'code repository', 'datasets (non-private)', 'simulation')
 ```
-
-# Overview Table of DL-based Survival Methods
 
 ```{r, echo=FALSE}
 htmltools::browsable(
@@ -129,11 +162,11 @@ htmltools::browsable(
             # pagination = FALSE,
             showPageSizeOptions = TRUE,
             pageSizeOptions = c(5, 7, 10, nrow(data)),
-            defaultPageSize = 5,
+            defaultPageSize = 7,
             highlight = TRUE,
             # selection = "multiple",
             details = function(index) {
-                urls <- strsplit(data[index, "code"], "; ")[[1]]
+                urls <- strsplit(data[index, "code"], ", ")[[1]]
                 if(length(urls) == 2) {
                     htmltools::div(
                         "further implementations of ",
@@ -212,7 +245,12 @@ htmltools::browsable(
                     cell = function(value, index) {
                         # url <- data[index, "paper"]
                         url <- papers[index]
-                        htmltools::tags$a(href = url, target = "_blank", value)
+                        k <- 70
+                        label <- value
+                        if(nchar(label) > k) {
+                            label <- stringr::str_trunc(label, k-3, ellipsis = "...")
+                        }
+                        htmltools::tags$a(href = url, target = "_blank", label)
                     },
                     show = TRUE,
                     sticky = "left",
@@ -297,18 +335,21 @@ htmltools::browsable(
                     # render as link
                     cell = function(value) {
                         if(value == "no"){
-                            "\u274c No"
+                            "\u274c not accessible"
                         } else {
-                            urls <- strsplit(value, ", ")[[1]]
-                            url <- urls[1]
-                            link <- sub("https://", "", url)
-                            if(startsWith(link, "github")){
-                                label <- "GitHub repo"
-                            } else if(grepl("github\\.io", link)){
-                                label <- "GitHub Pages site"
-                            } else {
-                                label <- link
+                            url <- strsplit(value, ", ")[[1]][1]
+                            label <- sub("https://", "", url)
+                            k <- 100
+                            if(nchar(label) > k) {
+                                label <- stringr::str_trunc(label, k-3, ellipsis = "...")
                             }
+                            # if(startsWith(link, "github")){
+                            #     label <- "GitHub repo"
+                            # } else if(grepl("github\\.io", link)){
+                            #     label <- "GitHub Pages site"
+                            # } else {
+                            #     label <- link
+                            # }
                             htmltools::tags$a(href = url, target = "_blank", label)
                         }
                     },
