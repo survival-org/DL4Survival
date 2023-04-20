@@ -36,6 +36,10 @@ All of the columns of the table, as well as the corresponding classifications, a
 - **high dim**: is the method specifically designed for high-dimensional (e.g., omics) features?
 - **multimodality**: can the method handle features of multiple modalities (e.g., images)?
 - **interpretability**: are the results produced by the methods (in particular, the feature effects) interpretable?
+    - BP = backpropagation
+    - CIC = cumulative incidence curve
+    - FI = feature importance
+    - classical = classical statistical interpretability of tabular data
 - **code**: is the code for the method and experiments publicly available and, if so, where? (Further implementations of the method, if available, are shown by expanding the respective row.)
 - **datasets**: which accessible (i.e., public or registered access) datasets is the method evaluated on in the respective paper?
 - **simulation**: is the method additionally evaluated on synthetic data?
@@ -73,7 +77,7 @@ drop_cols <- c(
     "active learning",
     "semi-supervised learning",
     "PASS",
-    "comments"
+    "scribbles"
 )
 hide_cols <- c('authors', 'year', 'multiple losses', 'datasets', 'simulation')
 
@@ -111,7 +115,7 @@ data = raw %>%
     relocate(architecture, .before = 8) %>%
     rename(
         # "left-trun-cation" = "left-truncation",
-        "paramet-rization" = "parametrization",
+        # "paramet-rization" = "parametrization",
         # "archi-tecture" = "architecture",
         "high dim" = "high dimensionality",
         "multi-modality" = "multimodality",
@@ -120,8 +124,9 @@ data = raw %>%
     select(-one_of(hide_cols), one_of(hide_cols))
 
 papers <- data %>% pull(paper)
+comments <- data %>% pull(comments)
 
-data <- data %>% select(-paper)
+data <- data %>% select(-c(paper, comments))
 ```
 
 ```{r, echo=FALSE}
@@ -156,6 +161,7 @@ htmltools::browsable(
             height = 700, # required for sticky column names
             fullWidth = TRUE,
             width = "auto",
+            defaultSorted = c("model name"),
             showSortIcon = TRUE,
             showSortable = FALSE,
             # minRows = 10,
@@ -164,81 +170,6 @@ htmltools::browsable(
             pageSizeOptions = c(5, 7, 10, nrow(data)),
             defaultPageSize = 7,
             # selection = "multiple",
-            details = function(index) {
-                urls <- strsplit(data[index, "code"], ", ")[[1]]
-                if(length(urls) == 2) {
-                    htmltools::div(
-                        "further implementations of ",
-                        data[index, "model name"],
-                        ": ",
-                        htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
-                    )
-                } else if(length(urls) == 3) {
-                    htmltools::div(
-                        "further implementations of ",
-                        data[index, "model name"],
-                        ": ",
-                        htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
-                        ", ",
-                        htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
-                    )
-                } else if(length(urls) == 4) {
-                    htmltools::div(
-                        "further implementations of ",
-                        data[index, "model name"],
-                        ": ",
-                        htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
-                        ", ",
-                        htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
-                        ", ",
-                        htmltools::tags$a(href = urls[4], target = "_blank", urls[4]),
-                    )
-                } else if(length(urls) == 5) {
-                    htmltools::div(
-                        "further implementations of ",
-                        data[index, "model name"],
-                        ": ",
-                        htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
-                        ", ",
-                        htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
-                        ", ",
-                        htmltools::tags$a(href = urls[4], target = "_blank", urls[4]),
-                        ", ",
-                        htmltools::tags$a(href = urls[5], target = "_blank", urls[5]),
-                    )
-                } else if(length(urls) == 6) {
-                    htmltools::div(
-                        "further implementations of ",
-                        data[index, "model name"],
-                        ": ",
-                        htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
-                        ", ",
-                        htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
-                        ", ",
-                        htmltools::tags$a(href = urls[4], target = "_blank", urls[4]),
-                        ", ",
-                        htmltools::tags$a(href = urls[5], target = "_blank", urls[5]),
-                        ", ",
-                        htmltools::tags$a(href = urls[6], target = "_blank", urls[6]),
-                    )
-                } else if(length(urls) > 6) {
-                    htmltools::div(
-                        "further implementations of ",
-                        data[index, "model name"],
-                        ": ",
-                        htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
-                        ", ",
-                        htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
-                        ", ",
-                        htmltools::tags$a(href = urls[4], target = "_blank", urls[4]),
-                        ", ",
-                        htmltools::tags$a(href = urls[5], target = "_blank", urls[5]),
-                        ", ",
-                        htmltools::tags$a(href = urls[6], target = "_blank", urls[6]),
-                        "... (see raw data for further implementations)"
-                    )
-                }
-            },
             columns = list(
                 title = colDef(
                     cell = function(value, index) {
@@ -253,15 +184,22 @@ htmltools::browsable(
                     },
                     width = 100,
                     show = TRUE,
-                    sticky = "left"),
+                    sticky = "left",
+                    style = list(borderRight = "1px solid #eee")),
                 authors = colDef(show = FALSE),
                 year = colDef(width = 49, show = FALSE),
-                `model name` = colDef(width = 80),
+                `model name` = colDef(
+                    details = function(index) {
+                        if(comments[index] != "") {
+                            paste0("comments: ", comments[index])
+                        }
+                    },
+                    width = 90),
                 `model class` = colDef(
                     cell = function(value) {if(value == "parametric") "para-metric" else value},
-                    width = 60
+                    width = 80
                 ),
-                `paramet-rization` = colDef(width = 70, show = TRUE),
+                parametrization = colDef(width = 100, show = TRUE),
                 # `multi-task learning` = colDef(show = FALSE),
                 `multiple losses` = colDef(
                     # render as an X mark or check mark
@@ -269,7 +207,13 @@ htmltools::browsable(
                     width = 60,
                     show = FALSE
                 ),
-                architecture = colDef(width = 80),
+                architecture = colDef(
+                    # details = function(index) {
+                    #     if(data[index, "model name"] %in% c("DeepHit", "DSM")) {
+                    #         paste("RNN used by extension")
+                    #     }
+                    # },
+                    width = 80),
                 `left-truncation` = colDef(
                     # render as an X mark or check mark
                     cell = function(value){if(value == "no") "\u274c no" else if(value == "yes") "\u2714\ufe0f yes" else value},
@@ -318,7 +262,7 @@ htmltools::browsable(
                 `interpret-ability` = colDef(
                     # render as an X mark or check mark
                     cell = function(value){if(value == "no") "\u274c no" else if(value == "yes") "\u2714\ufe0f yes" else value},
-                    width = 64
+                    width = 80
                 ),
                 `code` = colDef(
                     # render as link
@@ -340,6 +284,81 @@ htmltools::browsable(
                             #     label <- link
                             # }
                             htmltools::tags$a(href = url, target = "_blank", label)
+                        }
+                    },
+                    details = function(index) {
+                        urls <- strsplit(data[index, "code"], ", ")[[1]]
+                        if(length(urls) == 2) {
+                            htmltools::div(
+                                "further implementations of ",
+                                data[index, "model name"],
+                                ": ",
+                                htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
+                            )
+                        } else if(length(urls) == 3) {
+                            htmltools::div(
+                                "further implementations of ",
+                                data[index, "model name"],
+                                ": ",
+                                htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
+                                ", ",
+                                htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
+                            )
+                        } else if(length(urls) == 4) {
+                            htmltools::div(
+                                "further implementations of ",
+                                data[index, "model name"],
+                                ": ",
+                                htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
+                                ", ",
+                                htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
+                                ", ",
+                                htmltools::tags$a(href = urls[4], target = "_blank", urls[4]),
+                            )
+                        } else if(length(urls) == 5) {
+                            htmltools::div(
+                                "further implementations of ",
+                                data[index, "model name"],
+                                ": ",
+                                htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
+                                ", ",
+                                htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
+                                ", ",
+                                htmltools::tags$a(href = urls[4], target = "_blank", urls[4]),
+                                ", ",
+                                htmltools::tags$a(href = urls[5], target = "_blank", urls[5]),
+                            )
+                        } else if(length(urls) == 6) {
+                            htmltools::div(
+                                "further implementations of ",
+                                data[index, "model name"],
+                                ": ",
+                                htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
+                                ", ",
+                                htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
+                                ", ",
+                                htmltools::tags$a(href = urls[4], target = "_blank", urls[4]),
+                                ", ",
+                                htmltools::tags$a(href = urls[5], target = "_blank", urls[5]),
+                                ", ",
+                                htmltools::tags$a(href = urls[6], target = "_blank", urls[6]),
+                            )
+                        } else if(length(urls) > 6) {
+                            htmltools::div(
+                                "further implementations of ",
+                                data[index, "model name"],
+                                ": ",
+                                htmltools::tags$a(href = urls[2], target = "_blank", urls[2]),
+                                ", ",
+                                htmltools::tags$a(href = urls[3], target = "_blank", urls[3]),
+                                ", ",
+                                htmltools::tags$a(href = urls[4], target = "_blank", urls[4]),
+                                ", ",
+                                htmltools::tags$a(href = urls[5], target = "_blank", urls[5]),
+                                ", ",
+                                htmltools::tags$a(href = urls[6], target = "_blank", urls[6]),
+                                "... (see raw data for further implementations)"
+                            )
                         }
                     },
                     # style = cell_style(
