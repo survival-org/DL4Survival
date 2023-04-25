@@ -21,28 +21,29 @@ This table is not guaranteed to be complete and will be continuously extended. T
 ### Acronyms, abbreviations, and explanations of the table columns
 All of the columns of the table, as well as the corresponding classifications, are described in detail in the review paper.
 
-- **model name**: official method name if provided in the respective paper; otherwise, the first three letters of the first author's last name followed by the year of publication
-- **model class**: see review paper for classification
+- **model name**: Official method name if provided in the respective paper; otherwise, the first three letters of the first author's last name followed by the year of publication
+- **model class**: See review paper for classification
 - **parametrization**: see review paper for classification
-- **architecture**: which neural network architecture does the method employ?
-- **multiple losses**: does the method use more than one loss for training?
-- **left-truncation**: can the method handle left-truncated survival times?
-- **interval-censoring**: can the method handle interval-censored survival times?
-- **CR**: can the method handle competing risks?
-- **MSM**: can the method handle multi-state modeling?
-- **RE**: can the method handle recurrent events?
-- **TVF**: can the method handle time-varying features?
-- **TVE**: can the method estimate time-varying effects?
-- **high dim**: is the method specifically designed for high-dimensional (e.g., omics) features?
-- **multimodality**: can the method handle features of multiple modalities (e.g., images)?
-- **interpretability**: are the results produced by the methods (in particular, the feature effects) interpretable?
+- **architecture**: Which neural network architecture does the method employ?
+- **multiple losses**: Does the method use more than one loss for training?
+- **left-truncation**: Can the method handle left-truncated survival times?
+- **interval-censoring**: Can the method handle interval-censored survival times?
+- **CR**: Can the method handle competing risks?
+- **MSM**: Can the method handle multi-state modeling?
+- **RE**: Can the method handle recurrent events?
+- **TVF**: Can the method handle time-varying features?
+- **TVE**: Can the method estimate time-varying effects?
+- **high dim**: Is the method specifically designed for high-dimensional (e.g., omics) features?
+- **multimodality**: Can the method handle features of multiple modalities (e.g., images)?
+- **interpretability**: Are the results produced by the methods (in particular, the feature effects) interpretable?
     - BP = backpropagation
     - CIC = cumulative incidence curve
     - FI = feature importance
     - classical = classical statistical interpretability of tabular data
-- **code**: is the code for the method and experiments publicly available and, if so, where? (Further implementations of the method, if available, are shown by expanding the respective row.)
-- **datasets**: which accessible (i.e., public or registered access) datasets is the method evaluated on in the respective paper?
-- **simulation**: is the method additionally evaluated on synthetic data?
+
+- **code**: Is the code for the method and experiments publicly available and, if so, where? (Further implementations of the method, if available, are shown by expanding the respective row.)
+- **datasets**: Which accessible (i.e., public or registered access) datasets is the method evaluated on in the respective paper?
+- **simulation**: Is the method additionally evaluated on synthetic data?
 
 
 ```{r setup, include=FALSE}
@@ -91,6 +92,8 @@ data = raw %>%
             `model class` == "discrete-time" ~ "discrete-time",
             `model class` == "PEM-based" ~ "PEM-based",
             str_detect(raw[["model class"]], "parametric") ~ "parametric",
+            `model class` == "ODE-based" ~ "ODE-based",
+            `model class` == "ranking-based" ~ "ranking-based",
             TRUE ~ "other"
         ) %>% factor(levels = c("Cox-based", "discrete-time", "parametric", "PEM-based", "other")),
         # architecture = case_when(
@@ -195,10 +198,7 @@ htmltools::browsable(
                         }
                     },
                     width = 90),
-                `model class` = colDef(
-                    cell = function(value) {if(value == "parametric") "para-metric" else value},
-                    width = 80
-                ),
+                `model class` = colDef(width = 80),
                 parametrization = colDef(width = 100, show = TRUE),
                 # `multi-task learning` = colDef(show = FALSE),
                 `multiple losses` = colDef(
