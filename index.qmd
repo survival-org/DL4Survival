@@ -21,11 +21,11 @@ This table is not guaranteed to be complete and will be continuously extended. T
 ### Acronyms, abbreviations, and explanations of the table columns
 All of the columns of the table, as well as the corresponding classifications, are described in detail in the review paper.
 
-- **model name**: Official method name if provided in the respective paper; otherwise, the first three letters of the first author's last name followed by the year of publication
-- **model class**: See review paper for classification
-- **parametrization**: see review paper for classification
+- **title**: Title of the article introducing the method.
+- **model name**: Official method name if provided in the respective paper; otherwise, the first three letters of the first author's last name followed by the year of publication.
+- **model class**: See review paper for classification.
+- **parametrization**: See review paper for classification.
 - **architecture**: Which neural network architecture does the method employ?
-- **multiple losses**: Does the method use more than one loss for training?
 - **left-truncation**: Can the method handle left-truncated survival times?
 - **interval-censoring**: Can the method handle interval-censored survival times?
 - **CR**: Can the method handle competing risks?
@@ -40,11 +40,14 @@ All of the columns of the table, as well as the corresponding classifications, a
     - CIC = cumulative incidence curve
     - FI = feature importance
     - classical = classical statistical interpretability of tabular data
-
-- **code**: Is the code for the method and experiments publicly available and, if so, where? (Further implementations of the method, if available, are shown by expanding the respective row.)
-- **datasets**: Which accessible (i.e., public or registered access) datasets is the method evaluated on in the respective paper?
-- **simulation**: Is the method additionally evaluated on synthetic data?
-
+- **code**: Is the code for the method and experiments publicly available and, if so, where? (Hyperlink to the main repository; further implementations of the method, if available, are shown by expanding the respective row.)
+- **authors**: Authors of the article introducing the method. (*hidden*)
+- **year**: Year of publication of the article introducing the method. (*hidden*)
+- **paper**: URL of the publication of the article (hyperlink in the **title** column). (*hidden*)
+- **multiple losses**: Does the method use more than one loss for training? (*hidden*)
+- **datasets**: Which accessible (i.e., public or registered access) datasets is the method evaluated on in the respective paper? (*hidden*)
+- **simulation**: Is the method additionally evaluated on synthetic data? (*hidden*)
+- **comments**: Further comments regarding the method (also shown if expanding the row). (*hidden*)
 
 ```{r setup, include=FALSE}
 set.seed(1102)
@@ -80,7 +83,7 @@ drop_cols <- c(
     "PASS",
     "scribbles"
 )
-hide_cols <- c('authors', 'year', 'multiple losses', 'datasets', 'simulation')
+hide_cols <- c('authors', 'year', 'paper', 'multiple losses', 'datasets', 'simulation', 'comments')
 
 data = raw %>%
     mutate(
@@ -126,10 +129,10 @@ data = raw %>%
     ) %>%
     select(-one_of(hide_cols), one_of(hide_cols))
 
-papers <- data %>% pull(paper)
-comments <- data %>% pull(comments)
+# papers <- data %>% pull(paper)
+# comments <- data %>% pull(comments)
 
-data <- data %>% select(-c(paper, comments))
+# data <- data %>% select(-c(paper, comments))
 ```
 
 ```{r, echo=FALSE}
@@ -176,8 +179,8 @@ htmltools::browsable(
             columns = list(
                 title = colDef(
                     cell = function(value, index) {
-                        # url <- data[index, "paper"]
-                        url <- papers[index]
+                        url <- data[index, "paper"]
+                        # url <- papers[index]
                         k <- 70
                         label <- value
                         if(nchar(label) > k) {
@@ -193,8 +196,8 @@ htmltools::browsable(
                 year = colDef(width = 49, show = FALSE),
                 `model name` = colDef(
                     details = function(index) {
-                        if(comments[index] != "") {
-                            paste0("comments: ", comments[index])
+                        if(data[index, "comments"] != "") {
+                            paste0(data[index, "comments"])
                         }
                     },
                     width = 90),
@@ -375,13 +378,15 @@ htmltools::browsable(
                     # },
                     show = FALSE
                 ),
-                year = colDef(width = 49, show = FALSE),
+                year = colDef(show = FALSE),
+                paper = colDef(show = FALSE),
                 datasets = colDef(show = FALSE),
                 simulation = colDef(
                     # render as an X mark or check mark
                     cell = function(value){if(value == "no") "\u274c no" else "\u2714\ufe0f yes"},
                     show = FALSE
-                )
+                ),
+                comments = colDef(show = FALSE)
             )
         )
     )
