@@ -4,6 +4,7 @@ format:
     page-layout: full
     theme: cosmo
     fontsize: 0.7em
+    css: styles.css
     # max-width: 2000px
     # grid:
     #     body-width: 3000px
@@ -13,12 +14,20 @@ format:
 
 # An Overview Table of DL-based Survival Methods
 
-### Disclaimer
+## Disclaimer
+
+<div class="disclaimer-text">
+
 The table on this GitHub Pages site has been created as part of the review paper [Deep Learning For Survival Analysis: A Review](https://arxiv.org) and is licensed under CC BY.
 
 This table is not guaranteed to be complete and will be continuously extended. To do so, we welcome pull requests by adding to `data/raw.csv` in the [source repository](https://github.com/SimonWiegrebe/DL4Survival) of this site. New methods should comply with the inclusion and exclusion criteria used in the review paper and contain information for all columns in the table. We will then cross-check and subsequently merge new pull requests. Alternatively, you can also contact us directly to notify us of any new methods.
 
-### Acronyms, abbreviations, and explanations of the table columns
+</div>
+
+## Acronyms, abbreviations, and explanations of the table columns
+
+<div class="disclaimer-text">
+
 All of the columns of the table, as well as the corresponding classifications, are described in detail in the review paper.
 
 - **title**: Title of the article introducing the method.
@@ -48,6 +57,10 @@ All of the columns of the table, as well as the corresponding classifications, a
 - **datasets**: Which accessible (i.e., public or registered access) datasets is the method evaluated on in the respective paper? (*hidden*)
 - **simulation**: Is the method additionally evaluated on synthetic data? (*hidden*)
 - **comments**: Further comments regarding the method (also shown if expanding the row). (*hidden*)
+
+</div>
+
+## Table
 
 ```{r setup, include=FALSE}
 set.seed(1102)
