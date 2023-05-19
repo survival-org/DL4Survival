@@ -1,0 +1,169 @@
+# setup ----
+library(tidyverse)
+library(RCurl)
+library(googlesheets4)
+library(stringr)
+# library(VennDiagram)
+library(ggvenn)
+library(RColorBrewer)
+library(tikzDevice)
+
+size = 24
+theme = theme_classic() +
+  theme(text = element_text(size = size), axis.title = element_text(size = size),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        axis.text = element_text(size = size),
+        legend.text = element_text(size = size),
+        plot.title = element_text(hjust = 0.5, size = size, face = "bold"),
+        strip.text.y = element_text(size = size),
+        legend.text.align = 0,
+        strip.placement = "outside",
+        strip.background = element_blank(),
+        axis.title.y = element_text(margin = margin(0, 10, 0, 0)),
+        axis.title.x = element_text(margin = margin(10, 0, 0, 0)))
+
+# theme(axis.line = element_line(colour = "black"),
+#       panel.grid.major = element_blank(),
+#       panel.grid.minor = element_blank(),
+#       panel.border = element_blank(),
+#       panel.background = element_blank())
+
+# data ----
+# link <- "https://docs.google.com/spreadsheets/d/11CNiOzZGwKie1G2miQY6TVMVMfI-COmiF4x2ylqetzA/edit#gid=0"
+# raw <- googlesheets4::read_sheet(link)
+raw <- read.csv("../data/raw.csv", check.names = FALSE)
+
+df = raw %>%
+  mutate(
+    model_class = case_when(
+      # str_detect(raw[["model class"]], "Cox") ~ "Cox-based",
+      # str_detect(raw[["model class"]], "discrete") ~ "discrete-time",
+      # str_detect(raw[["model class"]], "PEM") ~ "PEM-based",
+      `model class` == "Cox-based" ~ "Cox-based",
+      `model class` == "discrete-time" ~ "discrete-time",
+      `model class` == "PEM-based" ~ "PEM-based",
+      str_detect(raw[["model class"]], "parametric") ~ "parametric",
+      `model class` == "ODE-based" ~ "ODE-based",
+      `model class` == "ranking-based" ~ "ranking-based",
+      TRUE ~ "other"
+    ) %>% factor(levels = c("Cox-based", "discrete-time", "parametric", "PEM-based", "ODE-based", "ranking-based", "other")),
+    architecture = case_when(
+      str_detect(raw[["architecture"]], "CNN") ~ "CNN",
+      str_detect(raw[["architecture"]], "RNN") ~ "RNN",
+      str_detect(raw[["architecture"]], "AE") ~ "AE/SAE/VAE",
+      str_detect(raw[["architecture"]], "transformer") ~ "transformer",
+      str_detect(raw[["architecture"]], "flexible") ~ "flexible",
+      str_detect(raw[["architecture"]], "ODE") ~ "nODE",
+      # str_detect(raw[["architecture"]], "framework") ~ "framework",
+      raw[["architecture"]] == "FFNN" ~ "only FFNN",
+      TRUE ~ "other"
+    ) %>% factor(levels = c("only FFNN", "CNN", "RNN", "AE/SAE/VAE", "transformer", "flexible", "nODE", "other")),
+    cens_or_trunc = ifelse(
+      `left-truncation`=="yes" | `interval-censoring`=="yes",
+      "yes",
+      "no"
+        )
+  ) %>%
+  filter(PASS == "PASS")
+
+# bar plots ----
+barplot_modelclass <- df %>%
+  ggplot(aes(x = model_class)) +
+  geom_bar() +
+  ylim(0, 25) +
+  xlab("model class") +
+  ylab("absolute frequency") +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  theme
+
+barplot_architecture <- df %>%
+  ggplot(aes(x = architecture)) +
+  geom_bar() +
+  ylim(0, 20) +
+  xlab("architecture") +
+  ylab("absolute frequency") +
+  scale_x_discrete(guide = guide_axis(angle = 45)) +
+  scale_y_continuous(limits = c(0,25)) +
+  theme
+
+file = "../results/barplot_modelclass.tex"
+height <- 10
+width <- 10
+tikz(file = file, height = height, width = width, standAlone = TRUE, sanitize = TRUE)
+barplot_modelclass
+dev.off()
+# tools::texi2pdf(file)
+
+file = "../results/barplot_architecture.tex"
+height <- 10
+width <- 10
+tikz(file = file, height = height, width = width, standAlone = TRUE, sanitize = TRUE)
+barplot_architecture
+dev.off()
+# tools::texi2pdf(file)
+
+# pdf(file = "../results/barplot_modelclass.pdf")
+# barplot_modelclass
+# dev.off()
+#
+# pdf(file = "../results/barplot_architecture.pdf")
+# barplot_architecture
+# dev.off()
+
+# venn diagrams ----
+
+## outcome modalities ----
+CensTrunc <- df %>% filter(cens_or_trunc == "yes") %>% select(`model name`) %>% unlist %>% unname
+RE <- df %>% filter(RE == "yes") %>% select(`model name`) %>% unlist %>% unname
+CR <- df %>% filter(CR == "yes") %>% select(`model name`) %>% unlist %>% unname
+MSM <- df %>% filter(MSM == "yes") %>% select(`model name`) %>% unlist %>% unname
+
+x <- list("Recurrent \n Events"=RE,"Censoring/Truncation"=CensTrunc, "Multi-State Modeling"=MSM, "Competing \n Risks"=CR)
+
+# colors <- colorRamps::ygobb(length(x))
+colors <- c("#FFFFAA", "#AAAA8E", "#56C8E87D", "#BFDBE57D")
+
+venn_outcomes <- ggvenn(
+  x,
+  show_elements = T,
+  label_sep = "\n",
+  fill_color = colors,
+  text_size = 4,
+  text_color = "black")
+# ggsave("../results/venn_outcomes.pdf", venn_outcomes, width = 11, height = 11, dpi = 300)
+
+file = "../results/venn_outcomes.tex"
+height <- 10
+width <- 10
+tikz(file = file, height = height, width = width, standAlone = TRUE, sanitize = TRUE)
+venn_outcomes
+dev.off()
+
+## feature modalities ----
+TVE <- df %>% filter(TVE == "yes") %>% select(`model name`) %>% unlist %>% unname
+TVF <- df %>%
+  filter(TVF == "yes") %>%
+  select(`model name`) %>% unlist %>% unname %>% recode("DeepHit" = "(Dynamic) DeepHit", "DSM" = "(R)DSM")
+MM <- df %>% filter(multimodality == "yes") %>% select(`model name`) %>% unlist %>% unname
+HD <- df %>% filter(`high dimensionality` == "yes") %>% select(`model name`) %>% unlist %>% unname
+
+x <- list("Multi- \n Modality"=MM, "Time-Varying Features"=TVF, "Time-Varying Effects"=TVE, "High Dimen- \n sionality"=HD)
+
+venn_features <- ggvenn(
+  x,
+  show_elements = T,
+  label_sep = "\n",
+  fill_color = colors,
+  text_size = 4,
+  text_color = "black")
+# ggsave("../results/venn_features.pdf", venn_features, width = 11, height = 11, dpi = 300)
+
+file = "../results/venn_features.tex"
+height <- 10
+width <- 10
+tikz(file = file, height = height, width = width, standAlone = TRUE, sanitize = TRUE)
+venn_features
+dev.off()
