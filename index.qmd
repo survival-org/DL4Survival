@@ -18,7 +18,7 @@ format:
 
 <div class="disclaimer-text">
 
-The table on this GitHub Pages site has been created as part of the review paper [Deep Learning For Survival Analysis: A Review](https://arxiv.org) and is licensed under CC BY.
+The table on this GitHub Pages site has been created as part of the review paper [Deep Learning For Survival Analysis: A Review](https://arxiv.org/abs/2305.14961) using the \texttt{R} package \texttt{reactable} (Lin, 2023). It is licensed under CC BY.
 
 This table is not guaranteed to be complete and will be continuously extended. To do so, we welcome pull requests by adding to `data/raw.csv` in the [source repository](https://github.com/survival-org/DL4Survival) of this site. New methods should comply with the inclusion and exclusion criteria used in the review paper and contain information for all columns in the table. We will then cross-check and subsequently merge new pull requests. Alternatively, you can also contact us directly to notify us of any new methods.
 
@@ -43,7 +43,7 @@ All of the columns of the table, as well as the corresponding classifications, a
 - **TVF**: Can the method handle time-varying features?
 - **TVE**: Can the method estimate time-varying effects?
 - **high dim**: Is the method specifically designed for high-dimensional (e.g., omics) features?
-- **multimodality**: Can the method handle features of multiple modalities (e.g., images)?
+- **multimodality**: Can the method handle unstructured features or multiple feature modalities (e.g., images)?
 - **interpretability**: Are the results produced by the methods (in particular, the feature effects) interpretable?
     - BP = backpropagation
     - CIC = cumulative incidence curve
