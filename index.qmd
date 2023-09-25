@@ -55,7 +55,7 @@ All of the columns of the table, as well as the corresponding classifications, a
 - **paper**: URL of the publication of the article (hyperlink in the **title** column). (*hidden*)
 - **multiple losses**: Does the method use more than one loss for training? (*hidden*)
 - **datasets**: Which accessible (i.e., public or registered access) datasets is the method evaluated on in the respective paper? (*hidden*)
-- **min dataset size**: Size of the smallest dataset used to evaluate the method. (*hidden*)
+- **min dataset size**: Size of the smallest dataset used to evaluate the method in the respective paper. (*hidden*)
 - **simulation**: Is the method additionally evaluated on synthetic data? (*hidden*)
 - **comments**: Further comments regarding the method (also shown if expanding the row). (*hidden*)
 
