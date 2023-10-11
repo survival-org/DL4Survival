@@ -46,10 +46,10 @@ df = raw %>%
       `model class` == "discrete-time" ~ "discrete-time",
       `model class` == "PEM-based" ~ "PEM-based",
       str_detect(raw[["model class"]], "parametric") ~ "parametric",
-      `model class` == "ranking-based" ~ "ranking-based",
       `model class` == "ODE-based" ~ "ODE-based",
+      `model class` == "ranking-based" ~ "ranking-based",
       TRUE ~ "other"
-    ) %>% factor(levels = c("Cox-based", "discrete-time", "parametric", "PEM-based", "ranking-based", "ODE-based", "other")),
+    ) %>% factor(levels = c("Cox-based", "discrete-time", "parametric", "PEM-based", "ODE-based", "ranking-based", "other")),
     architecture = case_when(
       str_detect(raw[["architecture"]], "CNN") ~ "CNN",
       str_detect(raw[["architecture"]], "RNN") ~ "RNN",
@@ -170,3 +170,4 @@ ggsave("../results/venn_features.jpg", venn_features, width = 11, height = 11, d
 # tikz(file = file, height = height, width = width, standAlone = TRUE, sanitize = TRUE)
 # venn_features
 # dev.off()
+
