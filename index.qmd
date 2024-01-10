@@ -1,4 +1,5 @@
 ---
+title: "An Overview Table of DL-based Survival Methods"
 format:
   html:
     page-layout: full
@@ -394,8 +395,8 @@ htmltools::browsable(
                 ),
                 year = colDef(show = FALSE),
                 paper = colDef(show = FALSE),
-                datasets = colDef(show = FALSE),
                 `min dataset size` = colDef(show = FALSE),
+                datasets = colDef(show = FALSE),
                 simulation = colDef(
                     # render as an X mark or check mark
                     cell = function(value){if(value == "no") "\u274c no" else "\u2714\ufe0f yes"},
