@@ -12,10 +12,6 @@ format:
     #     sidebar-width: 0px
 ---
 
-<head>
-<title>An Overview Table of DL-based Survival Methods</title>
-</head>
-
 # An Overview Table of DL-based Survival Methods
 
 ## Disclaimer
@@ -210,8 +206,8 @@ htmltools::browsable(
                     show = TRUE,
                     sticky = "left",
                     style = list(borderRight = "1px solid #eee")),
-                authors = colDef(show = FALSE),
-                year = colDef(width = 49, show = FALSE),
+                # authors = colDef(show = FALSE),
+                # year = colDef(width = 49, show = FALSE),
                 `model name` = colDef(
                     details = function(index) {
                         if(data[index, "comments"] != "") {
@@ -399,12 +395,12 @@ htmltools::browsable(
                 year = colDef(show = FALSE),
                 paper = colDef(show = FALSE),
                 datasets = colDef(show = FALSE),
+                `min dataset size` = colDef(show = FALSE),
                 simulation = colDef(
                     # render as an X mark or check mark
                     cell = function(value){if(value == "no") "\u274c no" else "\u2714\ufe0f yes"},
                     show = FALSE
                 ),
-                `min dataset size` = colDef(show = FALSE),
                 comments = colDef(show = FALSE)
             )
         )
