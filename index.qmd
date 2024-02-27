@@ -18,9 +18,9 @@ format:
 
 <div class="disclaimer-text">
 
-The table on this GitHub Pages site has been created as part of the review paper [Deep Learning For Survival Analysis: A Review](https://arxiv.org/abs/2305.14961) using the **R** package **reactable** (Lin, 2023). It is licensed under CC BY.
+The table on this GitHub Pages site has been created as part of the review paper [Deep Learning For Survival Analysis: A Review](https://link.springer.com/article/10.1007/s10462-023-10681-3) using the **R** package **reactable** (Lin, 2023). It is licensed under CC BY.
 
-This table is not guaranteed to be complete and will be continuously extended. To do so, we welcome pull requests by adding to `data/raw.csv` in the [source repository](https://github.com/survival-org/DL4Survival) of this site. New methods should comply with the inclusion and exclusion criteria used in the review paper and contain information for all columns in the table. We will then cross-check and subsequently merge new pull requests. Alternatively, you can also contact us directly to notify us of any new methods.
+This table is not guaranteed to be complete and will be extended continuously. To do so, we welcome pull requests by adding to `data/raw.csv` in the [source repository](https://github.com/survival-org/DL4Survival) of this site. New methods should comply with the inclusion and exclusion criteria used in the review paper and contain information for all columns in the table. We will then cross-check and merge new pull requests.
 
 </div>
 
@@ -97,7 +97,7 @@ drop_cols <- c(
     "PASS",
     "scribbles"
 )
-hide_cols <- c('authors', 'year', 'paper', 'multiple losses', 'datasets', 'simulation', 'comments')
+hide_cols <- c('authors', 'year', 'paper', 'multiple losses', 'datasets', 'min dataset size', 'simulation', 'comments')
 
 data = raw %>%
     mutate(
