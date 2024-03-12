@@ -89,7 +89,8 @@ library(htmltools)
 raw <- read.csv(
   "data/raw.csv",
   check.names=FALSE,
-  fileEncoding="UTF-8")
+  sep = ",",
+  fileEncoding="UTF-8")[,1:29]
 drop_cols <- c(
     "multi-task learning",
     "NN architecture",
