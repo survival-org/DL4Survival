@@ -20,7 +20,7 @@ format:
 
 The table on this GitHub Pages site has been created as part of the review paper [Deep Learning For Survival Analysis: A Review](https://link.springer.com/article/10.1007/s10462-023-10681-3) using the **R** package **reactable** (Lin, 2023). It is licensed under CC BY.
 
-This table is not guaranteed to be complete and will be extended continuously. To do so, we welcome pull requests by adding to `data/raw.csv` in the [source repository](https://github.com/survival-org/DL4Survival) of this site. New methods should comply with the inclusion and exclusion criteria used in the review paper and contain information for all columns in the table. We will then cross-check and merge new pull requests.
+This table is not guaranteed to be complete and will be extended continuously. To do so, we welcome pull requests by adding to `data/raw.csv` in the [source repository](https://github.com/survival-org/DL4Survival) of this site. New methods must comply with the inclusion and exclusion criteria used in the review paper and contain information for all columns in the table. We will then cross-check and merge new pull requests.
 
 </div>
 
