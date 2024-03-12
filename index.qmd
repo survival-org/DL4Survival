@@ -20,7 +20,7 @@ format:
 
 The table on this GitHub Pages site has been created as part of the review paper [Deep Learning For Survival Analysis: A Review](https://link.springer.com/article/10.1007/s10462-023-10681-3) using the **R** package **reactable** (Lin, 2023). It is licensed under CC BY.
 
-This table is not guaranteed to be complete and will be extended continuously. To do so, we welcome pull requests by adding to `data/raw.csv` in the [source repository](https://github.com/survival-org/DL4Survival) of this site. New methods should comply with the inclusion and exclusion criteria used in the review paper and contain information for all columns in the table. We will then cross-check and merge new pull requests.
+This table is not guaranteed to be complete and will be extended continuously. To do so, we welcome pull requests by adding to `data/raw.csv` in the [source repository](https://github.com/survival-org/DL4Survival) of this site. New methods must comply with the inclusion and exclusion criteria used in the review paper and contain information for all columns in the table. We will then cross-check and merge new pull requests.
 
 </div>
 
@@ -45,10 +45,12 @@ All of the columns of the table, as well as the corresponding classifications, a
 - **high dim**: Is the method specifically designed for high-dimensional (e.g., omics) features?
 - **multimodality**: Can the method handle unstructured features or multiple feature modalities (e.g., images)?
 - **interpretability**: Are the results produced by the methods (in particular, the feature effects) interpretable?
+    - classical = classical statistical interpretability of tabular data
     - BP = backpropagation
     - CIC = cumulative incidence curve
-    - FI = feature importance
-    - classical = classical statistical interpretability of tabular data
+    - (P)FI = (permutation) feature importance
+    - LRP = Layer-wise Relevance Propagation
+    - PA = pathway activation
 - **code**: Is the code for the method and experiments publicly available and, if so, where? (Hyperlink to the main repository; further implementations of the method, if available, are shown by expanding the respective row.)
 - **authors**: Authors of the article introducing the method. (*hidden*)
 - **year**: Year of publication of the article introducing the method. (*hidden*)
@@ -87,7 +89,8 @@ library(htmltools)
 raw <- read.csv(
   "data/raw.csv",
   check.names=FALSE,
-  fileEncoding="UTF-8")
+  sep = ",",
+  fileEncoding="UTF-8")[,1:29]
 drop_cols <- c(
     "multi-task learning",
     "NN architecture",
