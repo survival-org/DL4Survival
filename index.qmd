@@ -45,10 +45,12 @@ All of the columns of the table, as well as the corresponding classifications, a
 - **high dim**: Is the method specifically designed for high-dimensional (e.g., omics) features?
 - **multimodality**: Can the method handle unstructured features or multiple feature modalities (e.g., images)?
 - **interpretability**: Are the results produced by the methods (in particular, the feature effects) interpretable?
+    - classical = classical statistical interpretability of tabular data
     - BP = backpropagation
     - CIC = cumulative incidence curve
-    - FI = feature importance
-    - classical = classical statistical interpretability of tabular data
+    - (P)FI = (permutation) feature importance
+    - LRP = Layer-wise Relevance Propagation
+    - PA = pathway activation
 - **code**: Is the code for the method and experiments publicly available and, if so, where? (Hyperlink to the main repository; further implementations of the method, if available, are shown by expanding the respective row.)
 - **authors**: Authors of the article introducing the method. (*hidden*)
 - **year**: Year of publication of the article introducing the method. (*hidden*)
