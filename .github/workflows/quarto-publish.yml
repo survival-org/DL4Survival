@@ -18,6 +18,11 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
+      - name: Set up R
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y r-base
+
       - name: Install Dependencies
         run: |
           sudo Rscript -e 'install.packages("fontawesome", repos="https://cloud.r-project.org")'
